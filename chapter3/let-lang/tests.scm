@@ -1,44 +1,44 @@
 (module tests mzscheme
-  
+
   (provide test-list)
 
   ;;;;;;;;;;;;;;;; tests ;;;;;;;;;;;;;;;;
-  
+
   (define test-list
     '(
-  
+
       ;; simple arithmetic
       (positive-const "11" 11)
       (negative-const "-33" -33)
       (simple-arith-1 "-(44,33)" 11)
-  
+
       ;; nested arithmetic
       (nested-arith-left "-(-(44,33),22)" -11)
       (nested-arith-right "-(55, -(22,11))" 44)
-  
+
       ;; simple variables
       (test-var-1 "x" 10)
       (test-var-2 "-(x,1)" 9)
       (test-var-3 "-(1,x)" -9)
-      
+
       ;; simple unbound variables
       (test-unbound-var-1 "foo" error)
       (test-unbound-var-2 "-(x,foo)" error)
-  
+
       ;; simple conditionals
       (if-true "if zero?(0) then 3 else 4" 3)
       (if-false "if zero?(1) then 3 else 4" 4)
-      
+
       ;; test dynamic typechecking
       (no-bool-to-diff-1 "-(zero?(0),1)" error)
       (no-bool-to-diff-2 "-(1,zero?(0))" error)
       (no-int-to-if "if 1 then 2 else 3" error)
 
       ;; make sure that the test and both arms get evaluated
-      ;; properly. 
+      ;; properly.
       (if-eval-test-true "if zero?(-(11,11)) then 3 else 4" 3)
       (if-eval-test-false "if zero?(-(11, 12)) then 3 else 4" 4)
-      
+
       ;; and make sure the other arm doesn't get evaluated.
       (if-eval-test-true-2 "if zero?(-(11, 11)) then 3 else foo" 3)
       (if-eval-test-false-2 "if zero?(-(11,12)) then foo else 4" 4)
@@ -54,6 +54,29 @@
       (simple-nested-let "let x = 3 in let y = 4 in -(x,y)" -1)
       (check-shadowing-in-body "let x = 3 in let x = 4 in x" 4)
       (check-shadowing-in-rhs "let x = 3 in let x = -(x,1) in x" 2)
+
+      (check-minus "minus(3)" -3)
+      (check-quotient "quotient(7, 3)" 2)
+      (check-mix "let x = 3 in let y = 5 in if zero?(-(y, x)) then 0 else quotient(minus(y), -(y, x))" -2)
+
+      (check-equal "equal?(0, 1)" #f)
+      (check-equal "equal?(minus(-1), 1)" #t)
+
+      (check-cons "let x = 4 in car(car(cdr(cons(x, cons(cons(-(x, 1), emptylist), emptylist)))))" 3)
+      (check-null "null?(cons(1, emptylist))" #f)
+      (check-null "null?(cdr(cons(1, emptylist)))" #t)
+
+      (check-list "list(1, 2, 3)" (1 2 3))
+      (check-list "car(list(1, 2, 3))" 1)
+      (check-list "cdr(list(1, 2, 3))" (2 3))
+      (check-list "cdr(car(cdr(list(1, list(1, cons(9, emptylist), 3)))))" ((9) 3))
+
+      (check-cond "cond zero?(1) ==> 1 null?(list(1)) ==> 2 equal?(car(list(1, 2)), 1) ==> 3 end" 3)
+
+      (check-arbo-let-bindings "let x = 30 in let x = -(x, 1) y = -(x, 2) in -(x, y)" 1)
+      (check-arbo-let*-bindings "let x = 30 in let* x = -(x, 1) y = -(x, 2) in -(x, y)" 2)
+
+      (check-unpack "let u = 7 in unpack x y = list(u, 3) in -(x, y)" 4)
 
       ))
   )

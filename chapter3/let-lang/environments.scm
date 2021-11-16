@@ -1,14 +1,14 @@
-(module environments (lib "eopl.ss" "eopl") 
-  
+(module environments (lib "eopl.ss" "eopl")
+
   ;; builds environment interface, using data structures defined in
-  ;; data-structures.scm. 
+  ;; data-structures.scm.
 
   (require "data-structures.scm")
 
   (provide init-env empty-env extend-env apply-env)
 
 ;;;;;;;;;;;;;;;; initial environment ;;;;;;;;;;;;;;;;
-  
+
   ;; init-env : () -> Env
   ;; usage: (init-env) = [i=1, v=5, x=10]
   ;; (init-env) builds an environment in which i is bound to the
@@ -16,9 +16,9 @@
   ;; bound to the expressed value 10.
   ;; Page: 69
 
-  (define init-env 
+  (define init-env
     (lambda ()
-      (extend-env 
+      (extend-env
        'i (num-val 1)
        (extend-env
         'v (num-val 5)
@@ -31,8 +31,8 @@
   (define empty-env
     (lambda ()
       (empty-env-record)))
-  
-  (define empty-env? 
+
+  (define empty-env?
     (lambda (x)
       (empty-env-record? x)))
 

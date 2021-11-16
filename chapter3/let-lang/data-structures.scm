@@ -10,9 +10,11 @@
 
   (define-datatype expval expval?
     (num-val
-      (value number?))
+     (value number?))
     (bool-val
-      (boolean boolean?)))
+     (boolean boolean?))
+    (list-val
+     (list list?)))
 
 ;;; extractors:
 
@@ -32,6 +34,12 @@
 	(bool-val (bool) bool)
 	(else (expval-extractor-error 'bool v)))))
 
+  (define expval->list
+    (lambda (v)
+      (cases expval v
+             (list-val (xs) xs)
+             (else (expval-extractor-error 'list v)))))
+
   (define expval-extractor-error
     (lambda (variant value)
       (eopl:error 'expval-extractors "Looking for a ~s, found ~s"
@@ -41,16 +49,17 @@
 
 ;; example of a data type built without define-datatype
 
+
   (define empty-env-record
-    (lambda () 
+    (lambda ()
       '()))
 
   (define extended-env-record
     (lambda (sym val old-env)
       (cons (list sym val) old-env)))
-  
+
   (define empty-env-record? null?)
-  
+
   (define environment?
     (lambda (x)
       (or (empty-env-record? x)

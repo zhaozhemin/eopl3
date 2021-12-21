@@ -1,52 +1,124 @@
-* Progress [10/50]
+* Progress [18/50]
 
-- [ ] 3.1
-- [ ] 3.2
-- [ ] 3.3
-- [ ] 3.4
-- [ ] 3.5
-- [X] 3.6
-- [X] 3.7
-- [X] 3.8
-- [X] 3.9
-- [X] 3.10
-- [ ] 3.11
-- [X] 3.12
-- [ ] 3.13
-- [ ] 3.14
-- [X] 3.15
-- [X] 3.16
-- [X] 3.17
-- [X] 3.18
-- [ ] 3.19
-- [ ] 3.20
-- [ ] 3.21
-- [ ] 3.22
-- [ ] 3.23
-- [ ] 3.24
-- [ ] 3.25
-- [ ] 3.26
-- [ ] 3.27
-- [ ] 3.28
-- [ ] 3.29
-- [ ] 3.30
-- [ ] 3.31
-- [ ] 3.32
-- [ ] 3.33
-- [ ] 3.34
-- [ ] 3.35
-- [ ] 3.36
-- [ ] 3.37
-- [ ] 3.38
-- [ ] 3.39
-- [ ] 3.40
-- [ ] 3.41
-- [ ] 3.42
-- [ ] 3.43
-- [ ] 3.44
-- [ ] 3.45
-- [ ] 3.46
-- [ ] 3.47
-- [ ] 3.48
-- [ ] 3.49
-- [ ] 3.50
+  - [ ] 3.1
+  - [ ] 3.2
+  - [ ] 3.3
+  - [ ] 3.4
+  - [ ] 3.5
+  - [X] 3.6
+  - [X] 3.7
+  - [X] 3.8
+  - [X] 3.9
+  - [X] 3.10
+  - [ ] 3.11
+  - [X] 3.12
+  - [ ] 3.13
+  - [ ] 3.14
+  - [X] 3.15
+  - [X] 3.16
+  - [X] 3.17
+  - [X] 3.18
+  - [ ] 3.19
+  - [X] 3.20
+
+    #+BEGIN_SRC racket :lang eopl :results value :require "\"./proc-lang/proc-rep/top.scm\"" :in-file "./tmp.rkt"
+      (run "let f = proc (n) proc (m) -(n, -(0, m)) in ((f 1) 2)")
+    #+END_SRC
+
+    #+RESULTS:
+    : #(struct:num-val 3)
+  - [X] 3.21
+  - [ ] 3.22
+  - [X] 3.23
+
+    #+BEGIN_SRC racket :results output :require "\"./proc-lang/proc-rep/top.scm\"" :in-file "./tmp.rkt"
+      ;; 1. 12
+
+      ;; Factorial
+
+      (* 7 6 5 4 3 2 1)
+      (run "let makemult = proc (maker) proc (x) if zero?(x) then 1 else *(((maker maker) -(x, 1)), x) in let times4 = proc (x) ((makemult makemult) x) in (times4 7)")
+    #+END_SRC
+
+    #+RESULTS:
+    : 5040
+    : (num-val 5040)
+  - [X] 3.24
+
+    #+BEGIN_SRC racket :results output :require "\"./proc-lang/proc-rep/top.scm\"" :in-file "./tmp.rkt"
+      (run "let odd? = proc (odd?, even?) proc (n)
+      if zero?(n) then 0 else ((even? odd? even?) -(n, 1))
+      in let even? = proc (odd?, even?) proc (n)
+      if zero?(n) then 1 else ((odd? odd? even?) -(n, 1))
+      in ((even? odd? even?) 11) ")
+    #+END_SRC
+
+    #+RESULTS:
+    : (num-val 0)
+  - [X] 3.25
+
+    I sketched a bit in my notebook. So basically f in makerec is
+    maketimes4, x in d will be passed d itself, z in d will be 2, 1, 0
+    in each recursion, f in d is maketimes4, n in proc (n) is the
+    initial 3, f in maketimes4 is the curried proc (z) in d.
+  - [ ] 3.26
+  - [X] 3.27
+
+    Just put two print expressions above and below apply-procedure
+    respectively.
+  - [X] 3.28
+  - [X] 3.29
+
+    If f's formal parameter were a, it would print 2. However, it
+    seems depend on the implementation details. For example, in
+    Scheme, it works expectedly;
+
+    #+BEGIN_SRC racket :require mzscheme :results output
+      (define a 1)
+      (define (f) a)
+      (define (g) (f))
+      (println (let ((f (lambda () 0))) (g)))
+      (println (fluid-let ((f (lambda () 0))) (g)))
+    #+END_SRC
+
+    #+RESULTS:
+    : 1
+    : 0
+
+    in elisp, rebind variables works, but rebind functions doesn't
+    work.
+
+    #+BEGIN_SRC emacs-lisp :results output
+      (defvar a 1)
+      (defun f () a)
+      (defun g () (f))
+      (print (let ((a 2)) (g)))
+      (print (let ((f (lambda () 0))) (g)))
+    #+END_SRC
+
+    #+RESULTS:
+    :
+    : 2
+    :
+    : 1
+  - [ ] 3.30
+  - [ ] 3.31
+  - [ ] 3.32
+  - [ ] 3.33
+  - [ ] 3.34
+  - [ ] 3.35
+  - [ ] 3.36
+  - [ ] 3.37
+  - [ ] 3.38
+  - [ ] 3.39
+  - [ ] 3.40
+  - [ ] 3.41
+  - [ ] 3.42
+  - [ ] 3.43
+  - [ ] 3.44
+  - [ ] 3.45
+  - [ ] 3.46
+  - [ ] 3.47
+  - [ ] 3.48
+  - [ ] 3.49
+  - [ ] 3.50

@@ -1,44 +1,44 @@
 (module tests mzscheme
-  
+
   (provide test-list)
 
   ;;;;;;;;;;;;;;;; tests ;;;;;;;;;;;;;;;;
-  
+
   (define test-list
     '(
-  
+
       ;; simple arithmetic
       (positive-const "11" 11)
       (negative-const "-33" -33)
       (simple-arith-1 "-(44,33)" 11)
-  
+
       ;; nested arithmetic
       (nested-arith-left "-(-(44,33),22)" -11)
       (nested-arith-right "-(55, -(22,11))" 44)
-  
+
       ;; simple variables
       (test-var-1 "x" 10)
       (test-var-2 "-(x,1)" 9)
       (test-var-3 "-(1,x)" -9)
-      
+
       ;; simple unbound variables
       (test-unbound-var-1 "foo" error)
       (test-unbound-var-2 "-(x,foo)" error)
-  
+
       ;; simple conditionals
       (if-true "if zero?(0) then 3 else 4" 3)
       (if-false "if zero?(1) then 3 else 4" 4)
-      
+
       ;; test dynamic typechecking
       (no-bool-to-diff-1 "-(zero?(0),1)" error)
       (no-bool-to-diff-2 "-(1,zero?(0))" error)
       (no-int-to-if "if 1 then 2 else 3" error)
 
       ;; make sure that the test and both arms get evaluated
-      ;; properly. 
+      ;; properly.
       (if-eval-test-true "if zero?(-(11,11)) then 3 else 4" 3)
       (if-eval-test-false "if zero?(-(11, 12)) then 3 else 4" 4)
-      
+
       ;; and make sure the other arm doesn't get evaluated.
       (if-eval-test-true-2 "if zero?(-(11, 11)) then 3 else foo" 3)
       (if-eval-test-false-2 "if zero?(-(11,12)) then foo else 4" 4)
@@ -64,7 +64,7 @@
       (nested-procs "((proc (x) proc (y) -(x,y)  5) 6)" -1)
       (nested-procs2 "let f = proc(x) proc (y) -(x,y) in ((f -(10,5)) 6)"
         -1)
-      
+
        (y-combinator-1 "
 let fix =  proc (f)
             let d = proc (x) proc (z) ((f (x x)) z)
@@ -73,6 +73,14 @@ in let
     t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
 in let times4 = (fix t4m)
    in (times4 3)" 12)
-       
+
+       (check-multiple-arg-proc "let x = 100
+ in let f = proc (y) -(x, y)
+ in let x = 10
+ in let g = proc (y) -(x, y)
+ in let h = proc (x, y) -(x, y)
+ in (h (f 1) (g 1)) "
+                                90)
+
       ))
   )
